@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Car Racing Game</title>
+	<style>
+        * {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.container {
+	width: 100%;
+	height: 100vh;
+	background-color: #f8f8f8;
+}
+
+.road {
+	position: relative;
+	width: 600px;
+	height: 100%;
+	background-color: #a1a1a1;
+	margin: 0 auto;
+}
+
+.line {
+	position: absolute;
+	width: 10px;
+	height: 70px;
+	background-color: #f8f8f8;
+	border-radius: 5px;
+	top: 0;
+}
+.line:nth-child(1) {
+    left: 20px;
+    animation: lines 1s linear infinite;
+  }
+
+  .line:nth-child(2) {
+    left: 120px;
+    animation: lines 1s linear 0.25s infinite;
+  }
+
+  .line:nth-child(3) {
+    left: 220px;
+    animation: lines 1s linear 0.5s infinite;
+  }
+
+  .line:nth-child(4) {
+    left: 320px;
+    animation: lines 1s linear 0.75s infinite;
+  }
+
+  .line:nth-child(5) {
+    left: 420px;
+    animation: lines 1s linear 1s infinite;
+  }
+
+  .line:nth-child(6) {
+    left: 520px;
+    animation: lines 1s linear 1.25s infinite;
+  }
+
+  .line:nth-child(7) {
+    left: 620px;
+    animation: lines 1s linear 1.5s infinite;
+  }
+
+  .line:nth-child(8) {
+    left: 720px;
+    animation: lines 1s linear 1.75s infinite;
+  }
+
+
+    
+  .car {
+	position: absolute;
+	bottom: 10px;
+	left: 100%;
+	transform: translateX(-50%);
+	width: 600px;
+	height: 150px;
+	background-image: url('img.png');
+	background-repeat: no-repeat;
+	background-size: contain;
+	animation: car-move 2s ease-in-out infinite alternate;
+}
+
+
+@keyframes car-move {
+    0% {
+        transform: translateX(-50%);
+    }
+    10% {
+        transform: translateX(-65%);
+    }
+    20% {
+        transform: translateX(-50%);
+    }
+    30% {
+        transform: translateX(-35%);
+    }
+    40% {
+        transform: translateX(-50%);
+    }
+    50% {
+        transform: translateX(-65%);
+    }
+    60% {
+        transform: translateX(-50%);
+    }
+    70% {
+        transform: translateX(-35%);
+    }
+    80% {
+        transform: translateX(-50%);
+    }
+    90% {
+        transform: translateX(-65%);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+    
+    
+    .car:before,
+    .car:after {
+    content: '';
+    position: absolute;
+    background-color: #fff;
+    width: 15px;
+    height: 15px;
+    bottom: 25px;
+    border-radius: 50%;
+    }
+    
+    .car:before {
+    left: 10px;
+    }
+    
+    .car:after {
+    right: 10px;
+    }
+    
+    .car.move {
+    animation: moveCar 1s linear infinite;
+    }
+    
+    @keyframes lines {
+    from {
+    bottom: 0;
+    }
+ 
+    to {
+        bottom: 100vh;
+    }
+    
+}
+
+@keyframes lines {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(900%);
+    }
+}
+
+
+    </style>
+</head>
+<body>
+	<div class="container">
+		<div class="road">
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+				<div class="car" id="car"></div>
+		</div>
+	</div>
+
+	<script>
+        // Move the car left and right
+document.addEventListener('keydown', function(event) {
+    if (event.code === 'ArrowLeft' && carPosition > 1) {
+      carPosition -= 10;
+      car.style.left = carPosition + 'px';
+    } else if (event.code === 'ArrowRight' && carPosition < 340) {
+      carPosition += 10;
+      car.style.left = carPosition + 'px';
+    }
+  });
+  
+  // Move the enemy cars
+  function moveEnemyCars() {
+    let enemyCars = document.querySelectorAll('.enemy-car');
+  
+    enemyCars.forEach(function(enemyCar) {
+      let currentTop = parseInt(enemyCar.style.top);
+      
+      if (currentTop >= 500) {
+        enemyCar.style.top = '-50px';
+        enemyCar.style.left = getRandomPosition() + 'px';
+      } else {
+        enemyCar.style.top = currentTop + carSpeed + 'px';
+      }
+      
+      if (isCollision(car, enemyCar)) {
+        gameOver();
+      }
+    });
+  
+    requestAnimationFrame(moveEnemyCars);
+  }
+  
+  // Check for collision between two elements
+  function isCollision(a, b) {
+    let aRect = a.getBoundingClientRect();
+    let bRect = b.getBoundingClientRect();
+    
+    return !(
+      (aRect.bottom < bRect.top) || (aRect.top > bRect.bottom) ||
+      (aRect.right < bRect.left) || (aRect.left > bRect.right)
+    );
+  }
+  
+  // End the game
+  function gameOver() {
+    container.innerHTML = '<h1>Game Over</h1><button onclick="location.reload()">Play Again</button>';
+  }
+  
+  // Get a random position for the enemy car
+  function getRandomPosition() {
+    return Math.floor(Math.random() * 350);
+  }
+  
+  // Start the game
+  function startGame() {
+    moveEnemyCars();
+  }
+  
+  startGame();
+
+  
+    </script>
+</body>
+</html>
